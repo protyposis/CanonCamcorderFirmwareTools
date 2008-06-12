@@ -1,11 +1,12 @@
 /*
- * Canon HF10(0) Firmware Decrypter
+ * Canon HF10(0) Firmware Decrypter V1.1
  * Copyright 2008 mg1984@gmx.at
  * 
  * based on "Canon Firmware Decrypter" by Alex Bernstein, 2003
  */
 #include <stdio.h>
 #include <stddef.h>
+#include <getopt.h>
 
 #include "300D_table.h"
 
@@ -31,27 +32,43 @@ int dec(FILE *in, FILE *out, int i, int j, int length) {
 int main(int argc, char *argv[])
 {
   FILE *in, *out;
-  int i = 0, j = 0, rc = FIRST_P_ROUND, bc;
+  int rc = FIRST_P_ROUND, bc;
   int decstart = ENCRYPTION_START + FIRST_P_OFFSET;
+  int omithead = 0, c;
+  
+  while ((c = getopt (argc, argv, "o")) != -1) {
+        switch (c) {
+           case 'o':
+             omithead = 1;
+             break;
+        }
+  }
 
-  if (argc != 3) {
-    printf("Usage: dhf10 inputfile outfile\n");
+  if (argc < 3 || argc > 4) {
+    printf("Usage: dhf10 [-o] inputfile outfile\n");
+	printf("options:\n");
+	printf("    -o    omit unencrypted file head\n");
     return -1;
   }
 
-  if ((in = fopen(argv[1], "rb")) == NULL) {
-    printf("Cant't open file name %s\n", argv[1]);
+  if ((in = fopen(argv[optind], "rb")) == NULL) {
+    printf("Cant't open file name %s\n", argv[optind]);
     return -1;
   }
 
-  if ((out = fopen(argv[2], "wb")) == NULL) {
-    printf("Cant't open file name %s\n", argv[2]);
+  if ((out = fopen(argv[optind + 1], "wb")) == NULL) {
+    printf("Cant't open file name %s\n", argv[optind + 1]);
     fclose(in);
     return -1;
   }
   
-  while(decstart-- > 0)
-    fputc(fgetc(in), out);
+  // copy or omit unencrypted head
+  if(omithead == 1)
+    fseek(in, decstart, SEEK_SET);
+  else {
+    while(decstart-- > 0)
+      fputc(fgetc(in), out);
+  }
 
   // decrypt first packet
   dec(in, out, 0 + FIRST_P_OFFSET, P_SIZE - rc + FIRST_P_OFFSET, rc + 1 - FIRST_P_OFFSET);
@@ -67,4 +84,6 @@ int main(int argc, char *argv[])
   
   fclose(out);
   fclose(in);
+  
+  return 0;
 }
