@@ -11,9 +11,11 @@ namespace HF10_Bitmap_Viewer {
     public partial class Form1 : Form {
 
         private Stream _dataFile;
+        private Stack<long> bmpPointers;
 
         public Form1() {
             InitializeComponent();
+            bmpPointers = new Stack<long>();
         }
 
         private void Form1_Load(object sender, EventArgs e) {
@@ -34,7 +36,7 @@ namespace HF10_Bitmap_Viewer {
             lblDecimalValues.Text = String.Format(decInfo, 
                 nudPos.Value, nudWidth.Value, nudHeight.Value);
 
-            GenerateBitmap();
+            GenerateBitmap((long)nudPos.Value);
         }
 
         private void printBitmapHeader(CanonBitmapHeader header) {
@@ -43,7 +45,7 @@ namespace HF10_Bitmap_Viewer {
                 header.Unknown2, header.Width, header.Unknown3);
         }
 
-        private void GenerateBitmap() {
+        private void GenerateBitmap(long pos) {
             CanonBitmapHeader header;
             CanonBitmap cb;
             //try {
@@ -55,7 +57,11 @@ namespace HF10_Bitmap_Viewer {
             try {
                 byte[] headerData = new byte[4];
 
-                _dataFile.Seek((long)nudPos.Value, SeekOrigin.Begin);
+                nudPos.Value = pos;
+
+                if(_dataFile.Position != pos)
+                    _dataFile.Seek(pos, SeekOrigin.Begin); // skip if next button (we are already at the right position)
+
                 _dataFile.Read(headerData, 0, CanonBitmapHeader.SIZE);
 
                 header = new CanonBitmapHeader(headerData);
@@ -90,6 +96,16 @@ namespace HF10_Bitmap_Viewer {
             catch (Exception e) {
                 Console.WriteLine(e.Message);
             }
+        }
+
+        private void btnNext_Click(object sender, EventArgs e) {
+            bmpPointers.Push((long)nudPos.Value);
+            GenerateBitmap(_dataFile.Position);
+        }
+
+        private void btnPrev_Click(object sender, EventArgs e) {
+            if (bmpPointers.Count > 0)
+                GenerateBitmap(bmpPointers.Pop());
         }
     }
 }

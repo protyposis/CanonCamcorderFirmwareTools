@@ -82,36 +82,42 @@ namespace HF10_Bitmap_Viewer {
 
                 int bytesToCopy = (Width * Height < data.Length ? Width * Height : data.Length);
                 int fillupBytesTo4 = 4 - (Width % 4); // every scanline must be dividable by 4 (msdn docs!!?)
+                if (fillupBytesTo4 == 4) fillupBytesTo4 = 0;
 
-                Bitmap i = new Bitmap(Width + fillupBytesTo4, Height, System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
+                Bitmap i = new Bitmap(Width, Height, System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
                 i.Palette = GetGrayScalePalette();
-                Console.WriteLine("create bitmap w{0} h{1}", i.Width, i.Height);
+                //Console.WriteLine("create bitmap w{0} h{1}", i.Width, i.Height);
 
                 BitmapData bd = i.LockBits(new Rectangle(0, 0, i.Width, i.Height),
                                     ImageLockMode.WriteOnly, PixelFormat.Format8bppIndexed);
-                bd.Stride = i.Width;
+                bd.Stride = i.Width + fillupBytesTo4;
                 bd.Width = Width;
                 bd.Height = Height;
 
-                Console.WriteLine("bitmapdata w{0} h{1} stride{2}", bd.Width, bd.Height, bd.Stride);
+                //Console.WriteLine("bitmapdata w{0} h{1} stride{2}", bd.Width, bd.Height, bd.Stride);
 
                 IntPtr p = bd.Scan0;
+
+                int initPos = p.ToInt32();
 
                 for (int x = 0; x < bd.Height; x++) {
 
                     if (bd.Width * x >= data.Length)
                         break;
 
+                    /*Console.WriteLine(
+                        "writing data from pos {0} to pos {1} length {2}",
+                        bd.Width * x, p.ToInt32() - initPos, bd.Width);*/
                     Marshal.Copy(this.data, bd.Width * x, p, bd.Width);
 
                     if(x < (bd.Height - 1))
-                        p = (IntPtr)((int)p + (x + 1) * bd.Stride);
+                        p = (IntPtr)((int)p + bd.Stride);
                 }
-
-
 
                 //Marshal.Copy(this.data, 0, p, bytesToCopy);
                 i.UnlockBits(bd);
+
+                //Console.WriteLine("bitmap created: w:{0} h:{1}", i.Width, i.Height);
               
                 return i;
             }
