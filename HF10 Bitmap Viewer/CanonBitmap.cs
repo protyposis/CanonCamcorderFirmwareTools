@@ -139,20 +139,17 @@ namespace HF10_Bitmap_Viewer {
     }
 
     public class CanonBitmapHeader {
-        private byte unknown1, unknown2;
         private byte width;
-        private byte unknown3;
+        private byte unknown;
 
-        public const byte SIZE = 4;
+        public const byte SIZE = 2;
 
         public CanonBitmapHeader(byte[] bytes) {
             if (bytes.Length != SIZE)
                 throw new Exception("invalid header size");
 
-            this.unknown1 = bytes[0];
-            this.unknown2 = bytes[1];
-            this.width = bytes[2];
-            this.unknown3 = bytes[3];
+            this.width = bytes[0];
+            this.unknown = bytes[1];
         }
 
         public byte Width {
@@ -160,19 +157,9 @@ namespace HF10_Bitmap_Viewer {
             set { width = value; }
         }
 
-        public byte Unknown1 {
-            get { return unknown1; }
-            set { unknown1 = value; }
-        }
-
-        public byte Unknown2 {
-            get { return unknown2; }
-            set { unknown2 = value; }
-        }
-
-        public byte Unknown3 {
-            get { return unknown3; }
-            set { unknown3 = value; }
+        public byte Unknown {
+            get { return unknown; }
+            set { unknown = value; }
         }
     }
 }

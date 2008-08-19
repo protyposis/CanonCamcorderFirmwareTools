@@ -38,6 +38,7 @@
             this.btnPrev = new System.Windows.Forms.Button();
             this.pbMediumZoom = new HF10_Bitmap_Viewer.PictureBoxEx();
             this.pbZoomed = new HF10_Bitmap_Viewer.PictureBoxEx();
+            this.btnClearHistory = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pbOriginal)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudPos)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudWidth)).BeginInit();
@@ -70,7 +71,7 @@
             // 
             this.pbOriginal.BackColor = System.Drawing.Color.Magenta;
             this.pbOriginal.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.pbOriginal.Location = new System.Drawing.Point(15, 68);
+            this.pbOriginal.Location = new System.Drawing.Point(12, 68);
             this.pbOriginal.Name = "pbOriginal";
             this.pbOriginal.Size = new System.Drawing.Size(100, 96);
             this.pbOriginal.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
@@ -180,23 +181,23 @@
             // 
             // btnNext
             // 
-            this.btnNext.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnNext.Location = new System.Drawing.Point(408, 229);
+            this.btnNext.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnNext.Location = new System.Drawing.Point(342, 243);
             this.btnNext.Name = "btnNext";
-            this.btnNext.Size = new System.Drawing.Size(43, 37);
+            this.btnNext.Size = new System.Drawing.Size(109, 23);
             this.btnNext.TabIndex = 13;
-            this.btnNext.Text = "->";
+            this.btnNext.Text = "find next ->";
             this.btnNext.UseVisualStyleBackColor = true;
             this.btnNext.Click += new System.EventHandler(this.btnNext_Click);
             // 
             // btnPrev
             // 
-            this.btnPrev.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnPrev.Location = new System.Drawing.Point(359, 229);
+            this.btnPrev.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnPrev.Location = new System.Drawing.Point(249, 243);
             this.btnPrev.Name = "btnPrev";
-            this.btnPrev.Size = new System.Drawing.Size(43, 37);
+            this.btnPrev.Size = new System.Drawing.Size(87, 23);
             this.btnPrev.TabIndex = 14;
-            this.btnPrev.Text = "<-";
+            this.btnPrev.Text = "<- history back";
             this.btnPrev.UseVisualStyleBackColor = true;
             this.btnPrev.Click += new System.EventHandler(this.btnPrev_Click);
             // 
@@ -204,7 +205,7 @@
             // 
             this.pbMediumZoom.BackColor = System.Drawing.Color.Magenta;
             this.pbMediumZoom.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.pbMediumZoom.Location = new System.Drawing.Point(121, 68);
+            this.pbMediumZoom.Location = new System.Drawing.Point(118, 68);
             this.pbMediumZoom.Name = "pbMediumZoom";
             this.pbMediumZoom.Size = new System.Drawing.Size(100, 96);
             this.pbMediumZoom.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -222,11 +223,22 @@
             this.pbZoomed.TabIndex = 3;
             this.pbZoomed.TabStop = false;
             // 
+            // btnClearHistory
+            // 
+            this.btnClearHistory.Location = new System.Drawing.Point(249, 272);
+            this.btnClearHistory.Name = "btnClearHistory";
+            this.btnClearHistory.Size = new System.Drawing.Size(87, 23);
+            this.btnClearHistory.TabIndex = 15;
+            this.btnClearHistory.Text = "clear history";
+            this.btnClearHistory.UseVisualStyleBackColor = true;
+            this.btnClearHistory.Click += new System.EventHandler(this.btnClearHistory_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(463, 376);
+            this.Controls.Add(this.btnClearHistory);
             this.Controls.Add(this.btnPrev);
             this.Controls.Add(this.btnNext);
             this.Controls.Add(this.lblBitmapHeader);
@@ -274,6 +286,7 @@
         private PictureBoxEx pbMediumZoom;
         private System.Windows.Forms.Button btnNext;
         private System.Windows.Forms.Button btnPrev;
+        private System.Windows.Forms.Button btnClearHistory;
     }
 }
 

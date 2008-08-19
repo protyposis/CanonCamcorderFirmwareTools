@@ -40,9 +40,8 @@ namespace HF10_Bitmap_Viewer {
         }
 
         private void printBitmapHeader(CanonBitmapHeader header) {
-            string hInfo = "{0:x} {1:x} {2:x} {3:x} / {0} {1} {2} {3}";
-            lblBitmapHeader.Text = String.Format(hInfo, header.Unknown1,
-                header.Unknown2, header.Width, header.Unknown3);
+            string hInfo = "{0:x} {1:x} / {0} {1}";
+            lblBitmapHeader.Text = String.Format(hInfo, header.Width, header.Unknown);
         }
 
         private void GenerateBitmap(long pos) {
@@ -55,7 +54,7 @@ namespace HF10_Bitmap_Viewer {
                 //throw new Exception("no file loaded");
 
             try {
-                byte[] headerData = new byte[4];
+                byte[] headerData = new byte[CanonBitmapHeader.SIZE];
 
                 nudPos.Value = pos;
 
@@ -70,9 +69,13 @@ namespace HF10_Bitmap_Viewer {
                 nudWidth.Value = header.Width;
 
                 int size = (int)(header.Width * nudHeight.Value);
-                byte[] data = new byte[size];
+                int padding = (size + CanonBitmapHeader.SIZE) % 4 == 0 ? 0 : 4 - (size + CanonBitmapHeader.SIZE) % 4;
+                Console.WriteLine("wanting to read {0} bytes, {0}%{1}={2} -> padding {3} bytes",
+                    size, CanonBitmapHeader.SIZE, (size + CanonBitmapHeader.SIZE) % 4, padding);
 
-                _dataFile.Read(data, 0, size);
+                byte[] data = new byte[size + padding];
+
+                _dataFile.Read(data, 0, size + padding);
                 
                 
                 try {
@@ -106,6 +109,10 @@ namespace HF10_Bitmap_Viewer {
         private void btnPrev_Click(object sender, EventArgs e) {
             if (bmpPointers.Count > 0)
                 GenerateBitmap(bmpPointers.Pop());
+        }
+
+        private void btnClearHistory_Click(object sender, EventArgs e) {
+            bmpPointers.Clear();
         }
     }
 }
