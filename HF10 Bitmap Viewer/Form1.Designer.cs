@@ -45,6 +45,7 @@
             this.btnNext20 = new System.Windows.Forms.Button();
             this.pbMediumZoom = new HF10_Bitmap_Viewer.PictureBoxEx();
             this.pbZoomed = new HF10_Bitmap_Viewer.PictureBoxEx();
+            this.label4 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pbOriginal)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudPos)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudWidth)).BeginInit();
@@ -301,11 +302,23 @@
             this.pbZoomed.TabIndex = 3;
             this.pbZoomed.TabStop = false;
             // 
+            // label4
+            // 
+            this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label4.ForeColor = System.Drawing.SystemColors.ControlDark;
+            this.label4.Location = new System.Drawing.Point(632, 14);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(210, 23);
+            this.label4.TabIndex = 20;
+            this.label4.Text = "by Wiesel / mg1984@gmx.at";
+            this.label4.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(854, 581);
+            this.Controls.Add(this.label4);
             this.Controls.Add(this.btnNext20);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.cbFixedWidth);
@@ -366,6 +379,7 @@
         private System.Windows.Forms.RadioButton rbFourByte;
         private System.Windows.Forms.RadioButton rbTwoByte;
         private System.Windows.Forms.Button btnNext20;
+        private System.Windows.Forms.Label label4;
     }
 }
 
