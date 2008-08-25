@@ -14,6 +14,7 @@ namespace HF10_Bitmap_Viewer {
         private byte[] data;
 
         private CanonBitmapHeader header;
+        private static ColorPalette palette = GetGrayScalePalette();
 
 
         public CanonBitmap(byte[] data) {
@@ -24,14 +25,12 @@ namespace HF10_Bitmap_Viewer {
                 throw new Exception("too few data (no header)");
 
             byte[] headerData = new byte[CanonBitmapHeader.SIZE];
-            for (int x = 0; x < headerData.Length; x++)
-                headerData[x] = data[x];
+            Array.Copy(data, headerData, CanonBitmapHeader.SIZE);
 
             this.header = new CanonBitmapHeader(headerData);
 
             byte[] imageData = new byte[data.Length - CanonBitmapHeader.SIZE];
-            for (int x = CanonBitmapHeader.SIZE; x < data.Length; x++)
-                imageData[x - CanonBitmapHeader.SIZE] = data[x];
+            Array.Copy(data, CanonBitmapHeader.SIZE, imageData, 0, data.Length - CanonBitmapHeader.SIZE);
 
             this.data = imageData;
 
@@ -48,6 +47,9 @@ namespace HF10_Bitmap_Viewer {
 
             if (data.Length <= 0)
                 throw new Exception("no data");
+
+            if (header.Width <= 0)
+                throw new Exception("invalid width (<=0)");
 
             this.header = header;
             this.data = data;
@@ -85,7 +87,7 @@ namespace HF10_Bitmap_Viewer {
                 if (fillupBytesTo4 == 4) fillupBytesTo4 = 0;
 
                 Bitmap i = new Bitmap(Width, Height, System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
-                i.Palette = GetGrayScalePalette();
+                i.Palette = palette;
                 //Console.WriteLine("create bitmap w{0} h{1}", i.Width, i.Height);
 
                 BitmapData bd = i.LockBits(new Rectangle(0, 0, i.Width, i.Height),
@@ -123,7 +125,7 @@ namespace HF10_Bitmap_Viewer {
             }
         }
 
-        public static ColorPalette GetGrayScalePalette() {
+        private static ColorPalette GetGrayScalePalette() {
             Bitmap bmp = new Bitmap(1, 1, PixelFormat.Format8bppIndexed);
 
             ColorPalette monoPalette = bmp.Palette;
