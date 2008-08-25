@@ -43,9 +43,9 @@
             this.rbFourByte = new System.Windows.Forms.RadioButton();
             this.rbTwoByte = new System.Windows.Forms.RadioButton();
             this.btnNext20 = new System.Windows.Forms.Button();
+            this.label4 = new System.Windows.Forms.Label();
             this.pbMediumZoom = new HF10_Bitmap_Viewer.PictureBoxEx();
             this.pbZoomed = new HF10_Bitmap_Viewer.PictureBoxEx();
-            this.label4 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pbOriginal)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudPos)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudWidth)).BeginInit();
@@ -97,8 +97,6 @@
             this.nudPos.Name = "nudPos";
             this.nudPos.Size = new System.Drawing.Size(120, 20);
             this.nudPos.TabIndex = 4;
-            this.nudPos.ValueChanged += new System.EventHandler(this.numericUpDown_ValueChanged);
-            this.nudPos.Enter += new System.EventHandler(this.numericUpDown_ValueChanged);
             // 
             // nudWidth
             // 
@@ -113,10 +111,10 @@
             this.nudWidth.Name = "nudWidth";
             this.nudWidth.Size = new System.Drawing.Size(54, 20);
             this.nudWidth.TabIndex = 5;
-            this.nudWidth.ValueChanged += new System.EventHandler(this.numericUpDown_ValueChanged);
             // 
             // nudHeight
             // 
+            this.nudHeight.Enabled = false;
             this.nudHeight.Hexadecimal = true;
             this.nudHeight.Location = new System.Drawing.Point(98, 391);
             this.nudHeight.Maximum = new decimal(new int[] {
@@ -125,14 +123,13 @@
             0,
             0});
             this.nudHeight.Name = "nudHeight";
-            this.nudHeight.Size = new System.Drawing.Size(120, 20);
+            this.nudHeight.Size = new System.Drawing.Size(54, 20);
             this.nudHeight.TabIndex = 6;
             this.nudHeight.Value = new decimal(new int[] {
             18,
             0,
             0,
             0});
-            this.nudHeight.ValueChanged += new System.EventHandler(this.numericUpDown_ValueChanged);
             // 
             // label1
             // 
@@ -225,7 +222,6 @@
             // cbFixedWidth
             // 
             this.cbFixedWidth.AutoSize = true;
-            this.cbFixedWidth.Enabled = false;
             this.cbFixedWidth.Location = new System.Drawing.Point(162, 367);
             this.cbFixedWidth.Name = "cbFixedWidth";
             this.cbFixedWidth.Size = new System.Drawing.Size(60, 17);
@@ -280,6 +276,17 @@
             this.btnNext20.UseVisualStyleBackColor = true;
             this.btnNext20.Click += new System.EventHandler(this.btnNext20_Click);
             // 
+            // label4
+            // 
+            this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label4.ForeColor = System.Drawing.SystemColors.ControlDark;
+            this.label4.Location = new System.Drawing.Point(632, 14);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(210, 23);
+            this.label4.TabIndex = 20;
+            this.label4.Text = "by Wiesel / mg1984@gmx.at";
+            this.label4.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
             // pbMediumZoom
             // 
             this.pbMediumZoom.BackColor = System.Drawing.Color.Magenta;
@@ -301,17 +308,6 @@
             this.pbZoomed.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbZoomed.TabIndex = 3;
             this.pbZoomed.TabStop = false;
-            // 
-            // label4
-            // 
-            this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label4.ForeColor = System.Drawing.SystemColors.ControlDark;
-            this.label4.Location = new System.Drawing.Point(632, 14);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(210, 23);
-            this.label4.TabIndex = 20;
-            this.label4.Text = "by Wiesel / mg1984@gmx.at";
-            this.label4.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // Form1
             // 

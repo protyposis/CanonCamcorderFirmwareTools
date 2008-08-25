@@ -8,8 +8,8 @@ using System.Diagnostics;
 
 namespace HF10_Bitmap_Viewer {
     public class CanonBitmap {
-        private byte width;
-        private byte height;
+        private int width;
+        private int height;
 
         private byte[] data;
 
@@ -58,12 +58,12 @@ namespace HF10_Bitmap_Viewer {
             this.Height = (byte)(data.Length / this.Width);
         }
 
-        public byte Width {
+        public int Width {
             get { return width; }
             set { width = value; }
         }
 
-        public byte Height {
+        public int Height {
             get { return height; }
             set { height = value; }
         }
@@ -80,21 +80,21 @@ namespace HF10_Bitmap_Viewer {
             get {
                 Console.WriteLine(
                     "generating pic - w: {0}px h: {1}px data: {2}bytes (w*h={3}bytes)",
-                    Width, Height, data.Length, Width * Height);
+                    width, height, data.Length, width * height);
 
-                int bytesToCopy = (Width * Height < data.Length ? Width * Height : data.Length);
+                int bytesToCopy = (width * height < data.Length ? width * height : data.Length);
                 int fillupBytesTo4 = 4 - (Width % 4); // every scanline must be dividable by 4 (msdn docs!!?)
                 if (fillupBytesTo4 == 4) fillupBytesTo4 = 0;
 
-                Bitmap i = new Bitmap(Width, Height, System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
+                Bitmap i = new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
                 i.Palette = palette;
                 //Console.WriteLine("create bitmap w{0} h{1}", i.Width, i.Height);
 
                 BitmapData bd = i.LockBits(new Rectangle(0, 0, i.Width, i.Height),
                                     ImageLockMode.WriteOnly, PixelFormat.Format8bppIndexed);
                 bd.Stride = i.Width + fillupBytesTo4;
-                bd.Width = Width;
-                bd.Height = Height;
+                bd.Width = width;
+                bd.Height = height;
 
                 //Console.WriteLine("bitmapdata w{0} h{1} stride{2}", bd.Width, bd.Height, bd.Stride);
 
@@ -148,7 +148,7 @@ namespace HF10_Bitmap_Viewer {
 
         public CanonBitmapHeader(byte[] bytes) {
             if (bytes.Length != SIZE)
-                throw new Exception("invalid header size");
+                throw new InvalidHeaderException("invalid header size");
 
             this.width = bytes[0];
             this.unknown = bytes[1];

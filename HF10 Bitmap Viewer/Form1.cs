@@ -10,15 +10,19 @@ using System.IO;
 namespace HF10_Bitmap_Viewer {
     public partial class Form1 : Form {
 
-        private Stream _dataFile;
+        private CanonBitmapProvider _bitmapProvider;
         private Image _currentImage;
+        private EventHandler _valueChangedHandler;
         private Stack<long> bmpPointers;
-
-        private byte PAD_TO = 4;
 
         public Form1() {
             InitializeComponent();
             bmpPointers = new Stack<long>();
+
+            _valueChangedHandler = new EventHandler(numericUpDown_ValueChanged);;
+            nudPos.ValueChanged += _valueChangedHandler;
+            nudWidth.ValueChanged += _valueChangedHandler;
+            nudHeight.ValueChanged += _valueChangedHandler;
         }
 
         private void btnLoadFile_Click(object sender, EventArgs e) {
@@ -26,7 +30,8 @@ namespace HF10_Bitmap_Viewer {
             ofd.Multiselect = false;
             if (ofd.ShowDialog(this) == DialogResult.OK) {
                 lblFilename.Text = ofd.FileName;
-                _dataFile = new BufferedStream(ofd.OpenFile(), 1024 * 1024 * 10);
+                _bitmapProvider = new CanonBitmapProvider(ofd.OpenFile());
+                nudPos.Maximum = _bitmapProvider.Length;
             }
         }
 
@@ -53,39 +58,22 @@ namespace HF10_Bitmap_Viewer {
             CanonBitmapHeader header;
             CanonBitmap cb;
 
-            if (_dataFile == null)
+            if (_bitmapProvider == null)
                 return null;
             //throw new Exception("no file loaded");
 
             try {
-                byte[] headerData = new byte[CanonBitmapHeader.SIZE];
-
-                if (_dataFile.Position != pos)
-                    _dataFile.Seek(pos, SeekOrigin.Begin); // skip if next button (we are already at the right position)
-
-                _dataFile.Read(headerData, 0, CanonBitmapHeader.SIZE);
-
-                header = new CanonBitmapHeader(headerData);
+                header = _bitmapProvider.readHeader(pos);
                 printBitmapHeader(header);
+                //Console.WriteLine("header: {0} {1}", header.Width, header.Unknown);
 
-                Console.WriteLine("header: {0} {1}", header.Width, header.Unknown);
+                if (cbFixedWidth.Checked)
+                    cb = _bitmapProvider.readBitmap(header, (int)nudWidth.Value, (int)nudHeight.Value);
+                else
+                    cb = _bitmapProvider.readBitmap(header, header.Width, (int)nudHeight.Value);
 
-                //if(!cbFixedWidth.Checked)
-                //    nudWidth.Value = header.Width;
-
-                int size = (int)(header.Width * nudHeight.Value);
-                int padding = (size + CanonBitmapHeader.SIZE) % PAD_TO == 0 ? 0 : PAD_TO - (size + CanonBitmapHeader.SIZE) % PAD_TO;
-                Console.WriteLine("wanting to read {0} bytes, {0}%{1}={2} -> padding {3} bytes (pad_to {4})",
-                    size, CanonBitmapHeader.SIZE, (size + CanonBitmapHeader.SIZE) % PAD_TO, padding, PAD_TO);
-
-                byte[] data = new byte[size + padding];
-
-                _dataFile.Read(data, 0, size + padding);
-
-
-                cb = new CanonBitmap(header, data);
-                //cb.Height = (byte)nudHeight.Value;
-                //cb.Width = (byte)nudWidth.Value;
+                NUDValueChange(nudWidth, cb.Width);
+                NUDValueChange(nudHeight, cb.Height);
 
                 return cb.Pic;
 
@@ -103,10 +91,10 @@ namespace HF10_Bitmap_Viewer {
         }
 
         private void btnNext_Click(object sender, EventArgs e) {
-            if(_dataFile != null) {
+            if(_bitmapProvider != null) {
                 bmpPointers.Push((long)nudPos.Value);
                 AddImageToPanel(pbOriginal.Image);
-                nudPos.Value = _dataFile.Position;
+                nudPos.Value = _bitmapProvider.Position;
                 ShowBitmap(_currentImage);
                 //GenerateBitmap(_dataFile.Position);
 
@@ -144,15 +132,16 @@ namespace HF10_Bitmap_Viewer {
         }
 
         private void cbFixedWidth_CheckedChanged(object sender, EventArgs e) {
-            //nudWidth.Enabled = cbFixedWidth.Checked;
+            nudWidth.Enabled = nudHeight.Enabled = cbFixedWidth.Checked;
 
-            //if (!cbFixedWidth.Checked)
+            //if (!cbFixedWidth.Checked) {
             //    GenerateBitmap((long)nudPos.Value);
+            //}
         }
 
         private void ByteAlign_CheckedChanged(object sender, EventArgs e) {
-            if (rbTwoByte.Checked) PAD_TO = 2;
-            else if (rbFourByte.Checked) PAD_TO = 4;
+            if (rbTwoByte.Checked) _bitmapProvider.ByteAlignment = ByteAlignment.Halfword;
+            else if (rbFourByte.Checked) _bitmapProvider.ByteAlignment = ByteAlignment.Word;
 
             GenerateBitmap((long)nudPos.Value);
         }
@@ -161,18 +150,30 @@ namespace HF10_Bitmap_Viewer {
             int numBitmaps = 50;
             List<Control> bmpCtrls = new List<Control>(numBitmaps);
 
-            if (_dataFile != null) {
+            if (_bitmapProvider != null) {
                 for (int x = 0; x < numBitmaps; x++) {
-                    bmpPointers.Push((long)nudPos.Value);
+                    bmpPointers.Push(_bitmapProvider.Position);
                     bmpCtrls.Add(CreatePanelImage(_currentImage));
-                    GenerateBitmap(_dataFile.Position);
+                    GenerateBitmap(_bitmapProvider.Position);
                 }
 
                 AddControlsToPanel(bmpCtrls);
-                nudPos.Value = _dataFile.Position;
+                nudPos.Value = _bitmapProvider.Position;
                 ShowBitmap(_currentImage);
                 btnPrev.Enabled = bmpPointers.Count > 0;
             }
+        }
+
+        /// <summary>
+        /// Changes the value of a NumericUpDown control without
+        /// calling the value changed handler.
+        /// </summary>
+        /// <param name="nud"></param>
+        /// <param name="value"></param>
+        private void NUDValueChange(NumericUpDown nud, decimal value) {
+            nud.ValueChanged -= _valueChangedHandler;
+            nud.Value = value;
+            nud.ValueChanged += _valueChangedHandler;
         }
     }
 }
