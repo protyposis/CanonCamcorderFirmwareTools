@@ -50,6 +50,7 @@ namespace HF10_Bitmap_Viewer {
         }
 
         private void GenerateBitmap(long pos) {
+            lblStatus.Text = "";
             Image i = GetBitmap(pos);
             _currentImage = i;
         }
@@ -80,6 +81,7 @@ namespace HF10_Bitmap_Viewer {
             }
             catch (Exception e) {
                 Console.WriteLine(e.Message);
+                lblStatus.Text = e.Message;
                 //MessageBox.Show(this, e.StackTrace);
             }
 
