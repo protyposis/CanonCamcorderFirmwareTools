@@ -23,6 +23,7 @@
         /// Der Inhalt der Methode darf nicht mit dem Code-Editor geändert werden.
         /// </summary>
         private void InitializeComponent() {
+            this.components = new System.ComponentModel.Container();
             this.btnLoadFile = new System.Windows.Forms.Button();
             this.lblFilename = new System.Windows.Forms.Label();
             this.pbOriginal = new System.Windows.Forms.PictureBox();
@@ -44,18 +45,20 @@
             this.rbTwoByte = new System.Windows.Forms.RadioButton();
             this.btnNext20 = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
-            this.pbMediumZoom = new HF10_Bitmap_Viewer.PictureBoxEx();
-            this.pbZoomed = new HF10_Bitmap_Viewer.PictureBoxEx();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.lblStatus = new System.Windows.Forms.ToolStripStatusLabel();
+            this.button1 = new System.Windows.Forms.Button();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.pbMediumZoom = new HF10_Bitmap_Viewer.PictureBoxEx();
+            this.pbZoomed = new HF10_Bitmap_Viewer.PictureBoxEx();
             ((System.ComponentModel.ISupportInitialize)(this.pbOriginal)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudPos)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudWidth)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudHeight)).BeginInit();
             this.groupBox1.SuspendLayout();
+            this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbMediumZoom)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbZoomed)).BeginInit();
-            this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnLoadFile
@@ -73,9 +76,8 @@
             this.lblFilename.AutoSize = true;
             this.lblFilename.Location = new System.Drawing.Point(95, 14);
             this.lblFilename.Name = "lblFilename";
-            this.lblFilename.Size = new System.Drawing.Size(49, 13);
+            this.lblFilename.Size = new System.Drawing.Size(0, 13);
             this.lblFilename.TabIndex = 1;
-            this.lblFilename.Text = "Filename";
             // 
             // pbOriginal
             // 
@@ -164,7 +166,7 @@
             // lblDecimalValues
             // 
             this.lblDecimalValues.AutoSize = true;
-            this.lblDecimalValues.Location = new System.Drawing.Point(16, 422);
+            this.lblDecimalValues.Location = new System.Drawing.Point(13, 422);
             this.lblDecimalValues.Name = "lblDecimalValues";
             this.lblDecimalValues.Size = new System.Drawing.Size(77, 13);
             this.lblDecimalValues.TabIndex = 10;
@@ -174,7 +176,7 @@
             // lblBitmapHeader
             // 
             this.lblBitmapHeader.AutoSize = true;
-            this.lblBitmapHeader.Location = new System.Drawing.Point(16, 440);
+            this.lblBitmapHeader.Location = new System.Drawing.Point(13, 443);
             this.lblBitmapHeader.Name = "lblBitmapHeader";
             this.lblBitmapHeader.Size = new System.Drawing.Size(63, 13);
             this.lblBitmapHeader.TabIndex = 12;
@@ -195,9 +197,9 @@
             // 
             this.btnPrev.Enabled = false;
             this.btnPrev.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnPrev.Location = new System.Drawing.Point(16, 502);
+            this.btnPrev.Location = new System.Drawing.Point(12, 502);
             this.btnPrev.Name = "btnPrev";
-            this.btnPrev.Size = new System.Drawing.Size(87, 23);
+            this.btnPrev.Size = new System.Drawing.Size(91, 23);
             this.btnPrev.TabIndex = 14;
             this.btnPrev.Text = "<- history back";
             this.btnPrev.UseVisualStyleBackColor = true;
@@ -205,9 +207,9 @@
             // 
             // btnClearHistory
             // 
-            this.btnClearHistory.Location = new System.Drawing.Point(16, 531);
+            this.btnClearHistory.Location = new System.Drawing.Point(12, 531);
             this.btnClearHistory.Name = "btnClearHistory";
-            this.btnClearHistory.Size = new System.Drawing.Size(87, 23);
+            this.btnClearHistory.Size = new System.Drawing.Size(91, 23);
             this.btnClearHistory.TabIndex = 15;
             this.btnClearHistory.Text = "clear history";
             this.btnClearHistory.UseVisualStyleBackColor = true;
@@ -216,10 +218,12 @@
             // flpBitmaps
             // 
             this.flpBitmaps.AutoScroll = true;
+            this.flpBitmaps.AutoScrollMargin = new System.Drawing.Size(100, 100);
             this.flpBitmaps.BackColor = System.Drawing.Color.Black;
             this.flpBitmaps.Location = new System.Drawing.Point(228, 39);
             this.flpBitmaps.Name = "flpBitmaps";
-            this.flpBitmaps.Size = new System.Drawing.Size(614, 530);
+            this.flpBitmaps.Padding = new System.Windows.Forms.Padding(0, 0, 20, 0);
+            this.flpBitmaps.Size = new System.Drawing.Size(614, 549);
             this.flpBitmaps.TabIndex = 16;
             // 
             // cbFixedWidth
@@ -290,6 +294,34 @@
             this.label4.Text = "by Wiesel / mg1984@gmx.at";
             this.label4.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
+            // statusStrip1
+            // 
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.lblStatus});
+            this.statusStrip1.Location = new System.Drawing.Point(0, 591);
+            this.statusStrip1.Name = "statusStrip1";
+            this.statusStrip1.Size = new System.Drawing.Size(854, 22);
+            this.statusStrip1.SizingGrip = false;
+            this.statusStrip1.TabIndex = 21;
+            this.statusStrip1.Text = "statusStrip1";
+            // 
+            // lblStatus
+            // 
+            this.lblStatus.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblStatus.ForeColor = System.Drawing.Color.Red;
+            this.lblStatus.Name = "lblStatus";
+            this.lblStatus.Size = new System.Drawing.Size(0, 17);
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(12, 565);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(206, 23);
+            this.button1.TabIndex = 22;
+            this.button1.Text = "color palette browser";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // pbMediumZoom
             // 
             this.pbMediumZoom.BackColor = System.Drawing.Color.Magenta;
@@ -312,28 +344,12 @@
             this.pbZoomed.TabIndex = 3;
             this.pbZoomed.TabStop = false;
             // 
-            // statusStrip1
-            // 
-            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.lblStatus});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 576);
-            this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(854, 22);
-            this.statusStrip1.TabIndex = 21;
-            this.statusStrip1.Text = "statusStrip1";
-            // 
-            // lblStatus
-            // 
-            this.lblStatus.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblStatus.ForeColor = System.Drawing.Color.Red;
-            this.lblStatus.Name = "lblStatus";
-            this.lblStatus.Size = new System.Drawing.Size(0, 17);
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(854, 598);
+            this.ClientSize = new System.Drawing.Size(854, 613);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.btnNext20);
@@ -357,7 +373,9 @@
             this.Controls.Add(this.lblFilename);
             this.Controls.Add(this.btnLoadFile);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
             this.Name = "Form1";
+            this.ShowIcon = false;
             this.Text = "HF10/HV30 Bitmap Viewer";
             ((System.ComponentModel.ISupportInitialize)(this.pbOriginal)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudPos)).EndInit();
@@ -365,10 +383,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.nudHeight)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pbMediumZoom)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pbZoomed)).EndInit();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pbMediumZoom)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbZoomed)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -401,6 +419,8 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel lblStatus;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.ToolTip toolTip1;
     }
 }
 

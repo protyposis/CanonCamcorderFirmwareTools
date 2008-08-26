@@ -33,7 +33,7 @@ namespace HF10_Bitmap_Viewer {
             if(_dataFile.Read(headerData, 0, CanonBitmapHeader.SIZE) != CanonBitmapHeader.SIZE)
                 throw new InvalidHeaderException("could not read entire header (EOF?)");
 
-            return new CanonBitmapHeader(headerData);
+            return new CanonBitmapHeader(headerData, _dataFile.Position - CanonBitmapHeader.SIZE);
         }
 
         /// <summary>
@@ -67,8 +67,8 @@ namespace HF10_Bitmap_Viewer {
             int size = width * height;
             int padding = (size + CanonBitmapHeader.SIZE) % (byte)_byteAlign == 0 ? 0 : (byte)_byteAlign - (size + CanonBitmapHeader.SIZE) % (byte)_byteAlign;
             
-            Console.WriteLine("trying to read {0} bytes, {0}%{1}={2} -> padding {3} bytes (pad_to {4})",
-                size, CanonBitmapHeader.SIZE, (size + CanonBitmapHeader.SIZE) % (byte)_byteAlign, padding, _byteAlign);
+            //Console.WriteLine("trying to read {0} bytes, {0}%{1}={2} -> padding {3} bytes (pad_to {4})",
+            //    size, CanonBitmapHeader.SIZE, (size + CanonBitmapHeader.SIZE) % (byte)_byteAlign, padding, _byteAlign);
 
             byte[] data = new byte[size + padding];
 

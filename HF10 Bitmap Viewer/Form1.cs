@@ -11,7 +11,7 @@ namespace HF10_Bitmap_Viewer {
     public partial class Form1 : Form {
 
         private CanonBitmapProvider _bitmapProvider;
-        private Image _currentImage;
+        private CanonBitmap _currentImage;
         private EventHandler _valueChangedHandler;
         private Stack<long> bmpPointers;
 
@@ -28,6 +28,7 @@ namespace HF10_Bitmap_Viewer {
         private void btnLoadFile_Click(object sender, EventArgs e) {
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.Multiselect = false;
+            ofd.ReadOnlyChecked = true;
             if (ofd.ShowDialog(this) == DialogResult.OK) {
                 lblFilename.Text = ofd.FileName;
                 _bitmapProvider = new CanonBitmapProvider(ofd.OpenFile());
@@ -45,17 +46,16 @@ namespace HF10_Bitmap_Viewer {
         }
 
         private void printBitmapHeader(CanonBitmapHeader header) {
-            string hInfo = "header hex / dec: {0:x} {1:x} / {0} {1}";
+            string hInfo = "header hex / dec: {0:X2} {1:X2} / {0} {1}";
             lblBitmapHeader.Text = String.Format(hInfo, header.Width, header.Unknown);
         }
 
         private void GenerateBitmap(long pos) {
             lblStatus.Text = "";
-            Image i = GetBitmap(pos);
-            _currentImage = i;
+            _currentImage = GetBitmap(pos);
         }
 
-        private Image GetBitmap(long pos) {
+        private CanonBitmap GetBitmap(long pos) {
             CanonBitmapHeader header;
             CanonBitmap cb;
 
@@ -65,6 +65,7 @@ namespace HF10_Bitmap_Viewer {
 
             try {
                 header = _bitmapProvider.readHeader(pos);
+                //if (header.Width * 2 != header.Unknown) Console.WriteLine("{0:x} {1} {2}", pos, header.Width, header.Unknown);
                 printBitmapHeader(header);
                 //Console.WriteLine("header: {0} {1}", header.Width, header.Unknown);
 
@@ -76,7 +77,7 @@ namespace HF10_Bitmap_Viewer {
                 NUDValueChange(nudWidth, cb.Width);
                 NUDValueChange(nudHeight, cb.Height);
 
-                return cb.Pic;
+                return cb;
 
             }
             catch (Exception e) {
@@ -88,14 +89,15 @@ namespace HF10_Bitmap_Viewer {
             return null;
         }
 
-        private void ShowBitmap(Image i) {
-            pbZoomed.Image = pbMediumZoom.Image = pbOriginal.Image = i;
+        private void ShowBitmap(CanonBitmap i) {
+            if(i != null)
+                pbZoomed.Image = pbMediumZoom.Image = pbOriginal.Image = i.Pic;
         }
 
         private void btnNext_Click(object sender, EventArgs e) {
             if(_bitmapProvider != null) {
                 bmpPointers.Push((long)nudPos.Value);
-                AddImageToPanel(pbOriginal.Image);
+                AddImageToPanel(_currentImage);
                 nudPos.Value = _bitmapProvider.Position;
                 ShowBitmap(_currentImage);
                 //GenerateBitmap(_dataFile.Position);
@@ -116,20 +118,40 @@ namespace HF10_Bitmap_Viewer {
             flpBitmaps.Controls.Clear();
         }
 
-        private void AddImageToPanel(Image i) {
-            flpBitmaps.Controls.Add(CreatePanelImage(i));
+        private void AddImageToPanel(CanonBitmap i) {
+            Control c = CreatePanelImage(i);
+            flpBitmaps.Controls.Add(c);
+            flpBitmaps.ScrollControlIntoView(c);
+        }
+
+        private void CreateTooltip(Control c, CanonBitmap i) {
+            toolTip1.SetToolTip(c,
+                String.Format("0x{0:X8} w: {1} ws: {2}",
+                i.Header.Origin, i.Header.Width, i.Header.Unknown));
         }
 
         private void AddControlsToPanel(List<Control> l) {
             flpBitmaps.Controls.AddRange(l.ToArray());
+            flpBitmaps.ScrollControlIntoView(l[l.Count - 1]);
         }
 
-        private static Control CreatePanelImage(Image i) {
-            PictureBoxEx pb = new PictureBoxEx();
-            pb.Width = pb.Height = 48;
-            pb.SizeMode = PictureBoxSizeMode.Zoom;
+        private Control CreatePanelImage(CanonBitmap i) {
+            int border = 4;
 
-            pb.Image = i;
+            PictureBoxEx pb = new PictureBoxEx();
+            pb.Width = pb.Height = CanonBitmapProvider.DEFAULT_HEIGHT + border;
+
+            if (i != null) {
+                //if(i.Header.Unknown > pb.Width)
+                pb.Width = i.Header.Unknown + border;
+                pb.SizeMode = PictureBoxSizeMode.CenterImage;
+                CreateTooltip(pb, i);
+
+                try {
+                    pb.Image = CanonBitmap.FixedSize(i.Pic, i.Header.Unknown, i.Height);
+                }
+                catch { }
+            }
             return pb;
         }
 
@@ -177,5 +199,33 @@ namespace HF10_Bitmap_Viewer {
             nud.Value = value;
             nud.ValueChanged += _valueChangedHandler;
         }
+
+        private void button1_Click(object sender, EventArgs e) {
+            ColorForm cf;
+            if (lblFilename.Text != String.Empty)
+                cf = new ColorForm(lblFilename.Text);
+            else
+                cf = new ColorForm();
+
+            cf.Show();
+        }
+
+        //private void ExportBitmap(Control c) {
+        //    SaveFileDialog sfd = new SaveFileDialog();
+        //    sfd.Filter = "Bitmaps|*.bmp";
+        //    sfd.AddExtension = true;
+        //    if (sfd.ShowDialog(this) == DialogResult.OK) {
+        //        int w = c.Width;   // Breite des Controls / der Form
+        //        int h = c.Height;  // Höhe des Controls / der Form
+
+        //        // Bitmap für das Abbild des Controls / der Form bereitstellen
+        //        Bitmap bmp = new Bitmap(w, h);
+
+        //        // Screenshot vornehmen und zurückgeben
+        //        c.DrawToBitmap(bmp, Rectangle.FromLTRB(0, 0, w, h));
+        //        bmp.Save(sfd.FileName);
+        //    }
+        //}
+
     }
 }

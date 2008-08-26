@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
+using System.Drawing.Drawing2D;
 
 namespace HF10_Bitmap_Viewer {
     public class CanonBitmap {
@@ -16,8 +17,10 @@ namespace HF10_Bitmap_Viewer {
         private CanonBitmapHeader header;
         private static ColorPalette palette = GetGrayScalePalette();
 
+        private Image img;
 
-        public CanonBitmap(byte[] data) {
+
+        public CanonBitmap(byte[] data, long origin) {
             if (data.Length <= 0)
                 throw new Exception("no data");
 
@@ -27,7 +30,7 @@ namespace HF10_Bitmap_Viewer {
             byte[] headerData = new byte[CanonBitmapHeader.SIZE];
             Array.Copy(data, headerData, CanonBitmapHeader.SIZE);
 
-            this.header = new CanonBitmapHeader(headerData);
+            this.header = new CanonBitmapHeader(headerData, origin);
 
             byte[] imageData = new byte[data.Length - CanonBitmapHeader.SIZE];
             Array.Copy(data, CanonBitmapHeader.SIZE, imageData, 0, data.Length - CanonBitmapHeader.SIZE);
@@ -78,9 +81,11 @@ namespace HF10_Bitmap_Viewer {
 
         public Image Pic {
             get {
-                Console.WriteLine(
-                    "generating pic - w: {0}px h: {1}px data: {2}bytes (w*h={3}bytes)",
-                    width, height, data.Length, width * height);
+                if (img != null)
+                    return img;
+                //Console.WriteLine(
+                //    "generating pic - w: {0}px h: {1}px data: {2}bytes (w*h={3}bytes)",
+                //    width, height, data.Length, width * height);
 
                 int bytesToCopy = (width * height < data.Length ? width * height : data.Length);
                 int fillupBytesTo4 = 4 - (Width % 4); // every scanline must be dividable by 4 (msdn docs!!?)
@@ -120,7 +125,8 @@ namespace HF10_Bitmap_Viewer {
                 i.UnlockBits(bd);
 
                 //Console.WriteLine("bitmap created: w:{0} h:{1}", i.Width, i.Height);
-              
+                img = i;
+
                 return i;
             }
         }
@@ -136,22 +142,66 @@ namespace HF10_Bitmap_Viewer {
                 entries[i] = Color.FromArgb(i, i, i);
             }
 
+            //entries[0xFF] = Color.Yellow;
+
             return monoPalette;
+        }
+
+        /// <summary>
+        /// http://www.codeproject.com/KB/GDI-plus/imageresize.aspx
+        /// modified by me
+        /// </summary>
+        /// <param name="imgPhoto"></param>
+        /// <param name="Width"></param>
+        /// <param name="Height"></param>
+        /// <returns></returns>
+        public static Image FixedSize(Image imgPhoto, int Width, int Height) {
+            int sourceWidth = imgPhoto.Width;
+            int sourceHeight = imgPhoto.Height;
+            int sourceX = 0;
+            int sourceY = 0;
+            int destX = 0;
+            int destY = 0;
+
+            int destWidth = Width;
+            int destHeight = Height;
+
+            Bitmap bmPhoto = new Bitmap(Width, Height,
+                              PixelFormat.Format24bppRgb);
+            bmPhoto.SetResolution(imgPhoto.HorizontalResolution,
+                             imgPhoto.VerticalResolution);
+
+            Graphics grPhoto = Graphics.FromImage(bmPhoto);
+            grPhoto.Clear(Color.Black);
+            grPhoto.InterpolationMode =
+                    InterpolationMode.NearestNeighbor;
+
+            grPhoto.DrawImage(imgPhoto,
+                new Rectangle(destX, destY, destWidth, destHeight),
+                new Rectangle(sourceX, sourceY, sourceWidth, sourceHeight),
+                GraphicsUnit.Pixel);
+
+            grPhoto.Dispose();
+            return bmPhoto;
         }
     }
 
     public class CanonBitmapHeader {
+        private long origin;
+
         private byte width;
         private byte unknown;
 
         public const byte SIZE = 2;
 
-        public CanonBitmapHeader(byte[] bytes) {
+        public CanonBitmapHeader(byte[] bytes, long origin) {
             if (bytes.Length != SIZE)
                 throw new InvalidHeaderException("invalid header size");
 
             this.width = bytes[0];
             this.unknown = bytes[1];
+
+            this.origin = origin;
         }
 
         public byte Width {
@@ -162,6 +212,10 @@ namespace HF10_Bitmap_Viewer {
         public byte Unknown {
             get { return unknown; }
             set { unknown = value; }
+        }
+
+        public long Origin {
+            get { return origin; }
         }
     }
 }
