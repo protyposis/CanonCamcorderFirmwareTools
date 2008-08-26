@@ -61,6 +61,8 @@ namespace HF10_Bitmap_Viewer {
             Label l = new Label();
             l.Text = String.Format("{0:X8} ({1})", label1.BackColor.ToArgb(), count++);
             l.BackColor = label1.BackColor;
+            toolTip1.SetToolTip(l, String.Format("pos: 0x{0:X8}", _stream.Position - 4));
+
             flowLayoutPanel1.Controls.Add(l);
             flowLayoutPanel1.ScrollControlIntoView(l);
             numericUpDown1.Value += 4;
@@ -86,8 +88,9 @@ namespace HF10_Bitmap_Viewer {
             List<Control> ctrls = new List<Control>(50);
             for (int x = 0; x < 50; x++) {
                 Label l = new Label();
-                l.Text = String.Format("{0:X8} ({1})", label1.BackColor.ToArgb(), count++);
+                l.Text = String.Format("{0:X8} ({1})", label1.BackColor.ToArgb(), ++count);
                 l.BackColor = label1.BackColor;
+                toolTip1.SetToolTip(l, String.Format("pos: 0x{0:X8}", _stream.Position - 4));
                 ctrls.Add(l);
                 numericUpDown1.Value += 4;
             }

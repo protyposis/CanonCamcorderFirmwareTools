@@ -23,7 +23,7 @@
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
-            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.components = new System.ComponentModel.Container();
             this.button1 = new System.Windows.Forms.Button();
             this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
             this.button2 = new System.Windows.Forms.Button();
@@ -32,18 +32,10 @@
             this.button4 = new System.Windows.Forms.Button();
             this.cbInvert = new System.Windows.Forms.CheckBox();
             this.btnNext50 = new System.Windows.Forms.Button();
+            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             this.SuspendLayout();
-            // 
-            // flowLayoutPanel1
-            // 
-            this.flowLayoutPanel1.AutoScroll = true;
-            this.flowLayoutPanel1.BackgroundImage = global::HF10_Bitmap_Viewer.Properties.Resources.bg;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(174, 12);
-            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(547, 393);
-            this.flowLayoutPanel1.TabIndex = 0;
-            this.flowLayoutPanel1.ControlAdded += new System.Windows.Forms.ControlEventHandler(this.flowLayoutPanel1_ControlAdded);
             // 
             // button1
             // 
@@ -132,6 +124,16 @@
             this.btnNext50.UseVisualStyleBackColor = true;
             this.btnNext50.Click += new System.EventHandler(this.btnNext50_Click);
             // 
+            // flowLayoutPanel1
+            // 
+            this.flowLayoutPanel1.AutoScroll = true;
+            this.flowLayoutPanel1.BackgroundImage = global::HF10_Bitmap_Viewer.Properties.Resources.bg;
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(174, 12);
+            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(547, 393);
+            this.flowLayoutPanel1.TabIndex = 0;
+            this.flowLayoutPanel1.ControlAdded += new System.Windows.Forms.ControlEventHandler(this.flowLayoutPanel1_ControlAdded);
+            // 
             // ColorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -169,6 +171,7 @@
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.CheckBox cbInvert;
         private System.Windows.Forms.Button btnNext50;
+        private System.Windows.Forms.ToolTip toolTip1;
 
     }
 }
