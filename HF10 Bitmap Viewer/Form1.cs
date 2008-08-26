@@ -175,15 +175,28 @@ namespace HF10_Bitmap_Viewer {
             List<Control> bmpCtrls = new List<Control>(numBitmaps);
 
             if (_bitmapProvider != null) {
+                //for (int x = 0; x < numBitmaps; x++) {
+                //    bmpPointers.Push(_bitmapProvider.Position);
+                //    bmpCtrls.Add(CreatePanelImage(_currentImage));
+                //    GenerateBitmap(_bitmapProvider.Position);
+                //}
+
+                //AddControlsToPanel(bmpCtrls);
+                //nudPos.Value = _bitmapProvider.Position;
+                //ShowBitmap(_currentImage);
+                //btnPrev.Enabled = bmpPointers.Count > 0;
+
                 for (int x = 0; x < numBitmaps; x++) {
-                    bmpPointers.Push(_bitmapProvider.Position);
+                    bmpPointers.Push((long)nudPos.Value);
                     bmpCtrls.Add(CreatePanelImage(_currentImage));
                     GenerateBitmap(_bitmapProvider.Position);
                 }
-
                 AddControlsToPanel(bmpCtrls);
-                nudPos.Value = _bitmapProvider.Position;
+                //nudPos.Value = _bitmapProvider.Position;
+                NUDValueChange(nudPos, _bitmapProvider.Position);
                 ShowBitmap(_currentImage);
+                //GenerateBitmap(_dataFile.Position);
+
                 btnPrev.Enabled = bmpPointers.Count > 0;
             }
         }
