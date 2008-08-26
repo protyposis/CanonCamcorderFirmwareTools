@@ -45,9 +45,9 @@ namespace HF10_Bitmap_Viewer {
             ShowBitmap(_currentImage);
         }
 
-        private void printBitmapHeader(CanonBitmapHeader header) {
+        private void printBitmapHeader(CanonHeader header) {
             string hInfo = "header hex / dec: {0:X2} {1:X2} / {0} {1}";
-            lblBitmapHeader.Text = String.Format(hInfo, header.Width, header.Unknown);
+            lblBitmapHeader.Text = String.Format(hInfo, header.Value1, header.Value2);
         }
 
         private void GenerateBitmap(long pos) {
@@ -56,7 +56,7 @@ namespace HF10_Bitmap_Viewer {
         }
 
         private CanonBitmap GetBitmap(long pos) {
-            CanonBitmapHeader header;
+            CanonHeader header;
             CanonBitmap cb;
 
             if (_bitmapProvider == null)
@@ -64,15 +64,22 @@ namespace HF10_Bitmap_Viewer {
             //throw new Exception("no file loaded");
 
             try {
-                header = _bitmapProvider.readHeader(pos);
+                if (cbSymbolsImages.Checked)
+                    header = _bitmapProvider.readHeader(pos);
+                else
+                    header = _bitmapProvider.readBigHeader(pos);
                 //if (header.Width * 2 != header.Unknown) Console.WriteLine("{0:x} {1} {2}", pos, header.Width, header.Unknown);
                 printBitmapHeader(header);
                 //Console.WriteLine("header: {0} {1}", header.Width, header.Unknown);
 
                 if (cbFixedWidth.Checked)
                     cb = _bitmapProvider.readBitmap(header, (int)nudWidth.Value, (int)nudHeight.Value);
-                else
-                    cb = _bitmapProvider.readBitmap(header, header.Width, (int)nudHeight.Value);
+                else {
+                    if (cbSymbolsImages.Checked)
+                        cb = _bitmapProvider.readBitmap(header, header.Value1, (int)nudHeight.Value);
+                    else
+                        cb = _bitmapProvider.readBitmap(header, header.Value1, header.Value2);
+                }
 
                 NUDValueChange(nudWidth, cb.Width);
                 NUDValueChange(nudHeight, cb.Height);
@@ -127,7 +134,7 @@ namespace HF10_Bitmap_Viewer {
         private void CreateTooltip(Control c, CanonBitmap i) {
             toolTip1.SetToolTip(c,
                 String.Format("0x{0:X8} w: {1} ws: {2}",
-                i.Header.Origin, i.Header.Width, i.Header.Unknown));
+                i.Header.Origin, i.Header.Value1, i.Header.Value2));
         }
 
         private void AddControlsToPanel(List<Control> l) {
@@ -143,12 +150,21 @@ namespace HF10_Bitmap_Viewer {
 
             if (i != null) {
                 //if(i.Header.Unknown > pb.Width)
-                pb.Width = i.Header.Unknown + border;
+
+                if (i.Header is CanonBitmapHeader)
+                    pb.Width = i.Header.Value2 + border;
+                else if (i.Header is CanonBigBitmapHeader) {
+                    pb.Width = i.Header.Value1 + border;
+                    pb.Height = i.Header.Value2 + border;
+                }
                 pb.SizeMode = PictureBoxSizeMode.CenterImage;
                 CreateTooltip(pb, i);
 
                 try {
-                    pb.Image = CanonBitmap.FixedSize(i.Pic, i.Header.Unknown, i.Height);
+                    if(i.Header is CanonBitmapHeader)
+                        pb.Image = CanonBitmap.FixedSize(i.Pic, i.Header.Value2, i.Height);
+                    else
+                        pb.Image = i.Pic;
                 }
                 catch { }
             }
@@ -164,7 +180,8 @@ namespace HF10_Bitmap_Viewer {
         }
 
         private void ByteAlign_CheckedChanged(object sender, EventArgs e) {
-            if (rbTwoByte.Checked) _bitmapProvider.ByteAlignment = ByteAlignment.Halfword;
+            if (rbOneByte.Checked) _bitmapProvider.ByteAlignment = ByteAlignment.Byte;
+            else if (rbTwoByte.Checked) _bitmapProvider.ByteAlignment = ByteAlignment.Halfword;
             else if (rbFourByte.Checked) _bitmapProvider.ByteAlignment = ByteAlignment.Word;
 
             GenerateBitmap((long)nudPos.Value);

@@ -9,16 +9,17 @@ using System.Drawing.Drawing2D;
 
 namespace HF10_Bitmap_Viewer {
     public class CanonBitmap {
-        private int width;
-        private int height;
+        protected int width;
+        protected int height;
 
-        private byte[] data;
+        protected byte[] data;
 
-        private CanonBitmapHeader header;
-        private static ColorPalette palette = GetGrayScalePalette();
+        private CanonHeader header;
+        protected static ColorPalette palette = GetGrayScalePalette();
 
         private Image img;
 
+        protected CanonBitmap() { }
 
         public CanonBitmap(byte[] data, long origin) {
             if (data.Length <= 0)
@@ -37,27 +38,27 @@ namespace HF10_Bitmap_Viewer {
 
             this.data = imageData;
 
-            if (this.header.Width <= 0)
+            if (this.header.Value1 <= 0)
                 throw new Exception("invalid width (<=0)");
 
-            this.width = this.header.Width;
+            this.width = this.header.Value1;
             this.height = (byte)(this.data.Length / this.width);
         }
 
-        public CanonBitmap(CanonBitmapHeader header, byte[] data) {
+        public CanonBitmap(CanonHeader header, byte[] data) {
             if (header == null)
                 throw new NullReferenceException("header must not be null");
 
             if (data.Length <= 0)
                 throw new Exception("no data");
 
-            if (header.Width <= 0)
+            if (header.Value1 <= 0)
                 throw new Exception("invalid width (<=0)");
 
             this.header = header;
             this.data = data;
 
-            this.Width = header.Width;
+            this.Width = header.Value1;
             this.Height = (byte)(data.Length / this.Width);
         }
 
@@ -71,7 +72,7 @@ namespace HF10_Bitmap_Viewer {
             set { height = value; }
         }
 
-        public CanonBitmapHeader Header {
+        public CanonHeader Header {
             get { return header; }
         }
 
@@ -186,36 +187,24 @@ namespace HF10_Bitmap_Viewer {
         }
     }
 
-    public class CanonBitmapHeader {
-        private long origin;
-
-        private byte width;
-        private byte unknown;
-
-        public const byte SIZE = 2;
+    public class CanonBitmapHeader: CanonHeader {
 
         public CanonBitmapHeader(byte[] bytes, long origin) {
             if (bytes.Length != SIZE)
                 throw new InvalidHeaderException("invalid header size");
 
-            this.width = bytes[0];
-            this.unknown = bytes[1];
+            this.v1 = bytes[0];
+            this.v2 = bytes[1];
 
             this.origin = origin;
         }
 
-        public byte Width {
-            get { return width; }
-            set { width = value; }
+        public int Width {
+            get { return v1; }
         }
 
-        public byte Unknown {
-            get { return unknown; }
-            set { unknown = value; }
-        }
-
-        public long Origin {
-            get { return origin; }
+        public int ScaledWidth {
+            get { return v2; }
         }
     }
 }

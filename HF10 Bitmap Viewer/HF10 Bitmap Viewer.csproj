@@ -33,6 +33,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -44,8 +45,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BitmapException.cs" />
+    <Compile Include="CanonBigBitmap.cs" />
     <Compile Include="CanonBitmap.cs" />
     <Compile Include="CanonBitmapProvider.cs" />
+    <Compile Include="CanonHeader.cs" />
     <Compile Include="ColorForm.cs">
       <SubType>Form</SubType>
     </Compile>

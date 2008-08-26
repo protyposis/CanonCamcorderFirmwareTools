@@ -49,8 +49,10 @@
             this.lblStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.button1 = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.cbSymbolsImages = new System.Windows.Forms.CheckBox();
             this.pbMediumZoom = new HF10_Bitmap_Viewer.PictureBoxEx();
             this.pbZoomed = new HF10_Bitmap_Viewer.PictureBoxEx();
+            this.rbOneByte = new System.Windows.Forms.RadioButton();
             ((System.ComponentModel.ISupportInitialize)(this.pbOriginal)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudPos)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudWidth)).BeginInit();
@@ -239,11 +241,12 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.rbOneByte);
             this.groupBox1.Controls.Add(this.rbFourByte);
             this.groupBox1.Controls.Add(this.rbTwoByte);
-            this.groupBox1.Location = new System.Drawing.Point(98, 458);
+            this.groupBox1.Location = new System.Drawing.Point(16, 458);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(124, 38);
+            this.groupBox1.Size = new System.Drawing.Size(206, 38);
             this.groupBox1.TabIndex = 18;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Alignment";
@@ -252,7 +255,7 @@
             // 
             this.rbFourByte.AutoSize = true;
             this.rbFourByte.Checked = true;
-            this.rbFourByte.Location = new System.Drawing.Point(66, 15);
+            this.rbFourByte.Location = new System.Drawing.Point(126, 15);
             this.rbFourByte.Name = "rbFourByte";
             this.rbFourByte.Size = new System.Drawing.Size(54, 17);
             this.rbFourByte.TabIndex = 1;
@@ -264,7 +267,7 @@
             // rbTwoByte
             // 
             this.rbTwoByte.AutoSize = true;
-            this.rbTwoByte.Location = new System.Drawing.Point(6, 15);
+            this.rbTwoByte.Location = new System.Drawing.Point(66, 15);
             this.rbTwoByte.Name = "rbTwoByte";
             this.rbTwoByte.Size = new System.Drawing.Size(54, 17);
             this.rbTwoByte.TabIndex = 0;
@@ -322,6 +325,18 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
+            // cbSymbolsImages
+            // 
+            this.cbSymbolsImages.AutoSize = true;
+            this.cbSymbolsImages.Checked = true;
+            this.cbSymbolsImages.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbSymbolsImages.Location = new System.Drawing.Point(162, 392);
+            this.cbSymbolsImages.Name = "cbSymbolsImages";
+            this.cbSymbolsImages.Size = new System.Drawing.Size(63, 17);
+            this.cbSymbolsImages.TabIndex = 23;
+            this.cbSymbolsImages.Text = "symbols";
+            this.cbSymbolsImages.UseVisualStyleBackColor = true;
+            // 
             // pbMediumZoom
             // 
             this.pbMediumZoom.BackColor = System.Drawing.Color.Magenta;
@@ -344,11 +359,24 @@
             this.pbZoomed.TabIndex = 3;
             this.pbZoomed.TabStop = false;
             // 
+            // rbOneByte
+            // 
+            this.rbOneByte.AutoSize = true;
+            this.rbOneByte.Location = new System.Drawing.Point(6, 15);
+            this.rbOneByte.Name = "rbOneByte";
+            this.rbOneByte.Size = new System.Drawing.Size(54, 17);
+            this.rbOneByte.TabIndex = 2;
+            this.rbOneByte.TabStop = true;
+            this.rbOneByte.Text = "1 byte";
+            this.rbOneByte.UseVisualStyleBackColor = true;
+            this.rbOneByte.CheckedChanged += new System.EventHandler(this.ByteAlign_CheckedChanged);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(854, 613);
+            this.Controls.Add(this.cbSymbolsImages);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.label4);
@@ -421,6 +449,8 @@
         private System.Windows.Forms.ToolStripStatusLabel lblStatus;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.CheckBox cbSymbolsImages;
+        private System.Windows.Forms.RadioButton rbOneByte;
     }
 }
 

@@ -37,6 +37,19 @@ namespace HF10_Bitmap_Viewer {
         }
 
         /// <summary>
+        /// Read big header from current position
+        /// </summary>
+        /// <returns></returns>
+        public CanonBigBitmapHeader readBigHeader() {
+            byte[] headerData = new byte[CanonBigBitmapHeader.SIZE];
+
+            if (_dataFile.Read(headerData, 0, CanonBigBitmapHeader.SIZE) != CanonBigBitmapHeader.SIZE)
+                throw new InvalidHeaderException("could not read entire header (EOF?)");
+
+            return new CanonBigBitmapHeader(headerData, _dataFile.Position - CanonBigBitmapHeader.SIZE);
+        }
+
+        /// <summary>
         /// Read header from passed position
         /// </summary>
         /// <param name="pos">position to read the header from</param>
@@ -50,22 +63,41 @@ namespace HF10_Bitmap_Viewer {
         }
 
         /// <summary>
+        /// Read big header from passed position
+        /// </summary>
+        /// <param name="pos">position to read the header from</param>
+        /// <returns></returns>
+        public CanonBigBitmapHeader readBigHeader(long pos) {
+            // skip if we are already at the right position
+            if (_dataFile.Position != pos && _dataFile.Seek(pos, SeekOrigin.Begin) != pos)
+                throw new EndOfStreamException("cannot jump to the specified position (EOF?)");
+
+            return readBigHeader();
+        }
+
+        /// <summary>
         /// Read the bitmap on the current position and adds the passed header.
         /// </summary>
         /// <param name="header"></param>
         /// <returns></returns>
-        public CanonBitmap readBitmap(CanonBitmapHeader header) {
-            return readBitmap(header, header.Width, DEFAULT_HEIGHT);
+        public CanonBitmap readBitmap(CanonHeader header) {
+            if(header is CanonBitmapHeader)
+                return readBitmap(header, header.Value1, DEFAULT_HEIGHT);
+            else if (header is CanonBigBitmapHeader)
+                return readBitmap(header, header.Value1, header.Value2);
+            
+            // should not happen
+            return null;
         }
 
-        public CanonBitmap readBitmap(CanonBitmapHeader header, int width, int height) {
+        public CanonBitmap readBitmap(CanonHeader header, int width, int height) {
             CanonBitmap bmp;
 
             if (width <= 0 || height <= 0)
                 throw new BitmapSizeException("width and height must be > 0");
 
             int size = width * height;
-            int padding = (size + CanonBitmapHeader.SIZE) % (byte)_byteAlign == 0 ? 0 : (byte)_byteAlign - (size + CanonBitmapHeader.SIZE) % (byte)_byteAlign;
+            int padding = (size + CanonHeader.SIZE) % (byte)_byteAlign == 0 ? 0 : (byte)_byteAlign - (size + CanonBitmapHeader.SIZE) % (byte)_byteAlign;
             
             //Console.WriteLine("trying to read {0} bytes, {0}%{1}={2} -> padding {3} bytes (pad_to {4})",
             //    size, CanonBitmapHeader.SIZE, (size + CanonBitmapHeader.SIZE) % (byte)_byteAlign, padding, _byteAlign);
