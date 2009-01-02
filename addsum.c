@@ -3,15 +3,24 @@
 
 /*
  * Calculates the checksum of a file as a simple sum of integers.
- * Doesn't match with the fw checksums :(
+ * Now working! (endianness was wrong before)
  */
+
+/* http://www.codeguru.com/forum/showthread.php?t=292902 */
+unsigned int endian_swap(unsigned int x)
+{
+    return (x>>24) | 
+        ((x<<8) & 0x00FF0000) |
+        ((x>>8) & 0x0000FF00) |
+        (x<<24);
+}
 
 int main(int argc, char *argv[])
 {
   FILE *in;
   long filesize;
-  int sum = 0;
-  int buffer;
+  unsigned int sum = 0;
+  unsigned int buffer;
   int count = 0;
 
   if (argc != 2) {
@@ -27,15 +36,17 @@ int main(int argc, char *argv[])
   fseek (in , 0 , SEEK_END);
   filesize = ftell (in);
   rewind (in);
+  printf("file size: %d (0x%08x) bytes\n", filesize, filesize);
 
   
   do {
 	//fputc(fgetc(in), out);
 	fread(&buffer,4,1,in);
-	sum = sum + buffer;
+	sum += endian_swap(buffer);
 	count++;
-	printf("int %x\n", buffer);
-  } while(count / 4 < filesize);
+	//printf("int %x swapped %x\n", buffer, endian_swap(buffer));
+  } while(count * 4 < filesize);
+  printf("checksum %x calculated over %d bytes\n", sum, count * 4);
 
   fclose(in);
   
