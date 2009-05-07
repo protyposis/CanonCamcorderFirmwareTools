@@ -14,6 +14,9 @@
  * V1.3
  * - option to calculate checksum
  * - supports HF10/100 and HV30
+ *
+ * V1.3b
+ * - crypting mechanism simplified
  * 
  * based on "Canon Firmware Decrypter" by Alex Bernstein, 2003
  */
@@ -22,7 +25,7 @@
 #include <getopt.h>
 #include <string.h>
 
-#define VERSION "1.3"
+#define VERSION "1.3b"
 
 #include "300D_table.h"
 
@@ -107,6 +110,41 @@ int dec(int i, int j, int length, char *buffer, int offset) {
   return x;
 }
 
+struct KeygenState {
+  int	length;
+  char	*key;
+};
+struct KeygenState keystate;
+void keygen_init() {
+  int x, c = 0, i = 0, j = 0, rc = 0;
+  
+  keystate.length = P_SIZE * (P_SIZE + 1);
+  keystate.key = (char *)malloc(keystate.length);
+
+  for(rc = 0; rc < P_SIZE; rc++) {
+    for(x = 0; x < P_SIZE - i; x++) {
+      keystate.key[c] = crypt1[i + x] ^ crypt2[x];
+	  c++;
+	}
+	for(x = 0; x < j + 1; x++) {
+	  keystate.key[c] = crypt1[x] ^ crypt2[P_SIZE - j + x];
+	  c++;
+	}
+	
+	i++ % P_SIZE;
+	j++ % P_SIZE;
+  }
+}
+
+void keygen_crypt(char* buffer_src, char* buffer_dst, int offset, int length, int key_offset) {
+  int x;
+  
+  buffer_src = (char*)(buffer_src + offset);
+  buffer_dst = (char*)(buffer_dst + offset);
+  for(x = 0; x < length; x++)
+	buffer_dst[x] = buffer_src[x] ^ keystate.key[(key_offset + x) % keystate.length];
+}
+
 unsigned int checksum(unsigned int *buffer, unsigned int offset, unsigned int length) {
   unsigned int x, result = 0;
 
@@ -132,17 +170,18 @@ Model* identify_model(char *data) {
 int main(int argc, char *argv[])
 {
   FILE *in, *out;
-  int rc, bc; // roundcount, bytecount
   long decstart, decsize;
   long filesize, temp, temp2;
   char o_split = 0, o_skip_ed = 0, o_calc_checksum = 0;
-  int c, offset;
+  int c;
   char *buffer;
   
   FWHeader *header;
   FWFooter *footer;
   //FWSection *sections[5];
   Model *model;
+  
+  keygen_init();
 	
   printf("Universal Canon Digic DV Firmware Decrypter V%s\n\n", VERSION);
   
@@ -161,7 +200,7 @@ int main(int argc, char *argv[])
   }
 
   if (argc < 3 || argc > 6) {
-    printf("Usage: dhf10 [options] inputfile outputfile\n");
+    printf("Usage: ud [options] inputfile outputfile\n");
 	printf("options:\n");
 	printf("    -s    write sections into separate output files\n");
 	printf("    -k    skip en-/decryption\n");
@@ -210,38 +249,7 @@ int main(int argc, char *argv[])
   printf("camera model:\t\t%s\n\n", model->name);
   
   if(!o_skip_ed) {
-      rc = model->first_p_round;
-	  
-	  // skip unencrypted header
-	  offset = decstart;
-
-	  // decrypt first packet
-	  offset += dec(0 + model->first_p_offset, P_SIZE - rc + model->first_p_offset, rc + 1 - model->first_p_offset, buffer, offset);
-	  rc++;
-
-	  // decrypt other packets
-	  do {
-	    bc = dec(rc, 0, P_SIZE - rc, buffer, offset);
-		bc += dec(0, P_SIZE - rc, rc + 1, buffer, offset + bc);
-		rc = (rc + 1) % P_SIZE;
-		offset += bc;
-		//printf("rc: %5i bc: %5i\n", rc, bc);
-	  } while(bc != 0 && offset <= filesize - P_SIZE - sizeof(FWFooter));
-	  
-	  // decrypt last incomplete packet before footer
-	  temp = filesize - offset - sizeof(FWFooter);
-	  if(temp >= P_SIZE - rc) {
-		bc = dec(rc, 0, P_SIZE - rc, buffer, offset);
-		temp -= bc;
-		bc += dec(0, P_SIZE - rc, temp, buffer, offset + bc);
-		offset += bc;
-	  }
-	  else {
-	    bc = dec(rc, 0, temp, buffer, offset);
-		offset += bc;
-	  }
-	  
-	  // skip unencrypted footer
+	  keygen_crypt(buffer, buffer, decstart, decsize, P_SIZE * (model->first_p_round + 1) + model->first_p_offset);
   }
   
   //for(temp = 0; temp < endian_swap(footer->num_sections); temp++)
@@ -301,6 +309,7 @@ int main(int argc, char *argv[])
   }
 
   free(buffer);
+  free(keystate.key);
   printf("finished\n");
   return 0;
 }
