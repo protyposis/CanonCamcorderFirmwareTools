@@ -1,6 +1,6 @@
 /*
  * Universal Canon Digic DV Firmware Decrypter
- * Copyright 2008 Mario Guggenberger <mg@protyposis.net>
+ * Copyright 2008, 2014 Mario Guggenberger <mg@protyposis.net>
  *
  * V1.1
  * - option to omit unecrypted file header
@@ -17,6 +17,9 @@
  *
  * V1.3b
  * - crypting mechanism simplified
+ *
+ * V1.3c
+ * - support for HF11 added
  * 
  * based on "Canon Firmware Decrypter" by Alex Bernstein, 2003
  */
@@ -25,7 +28,7 @@
 #include <getopt.h>
 #include <string.h>
 
-#define VERSION "1.3b"
+#define VERSION "1.3c"
 
 #include "300D_table.h"
 
@@ -49,8 +52,9 @@ typedef struct ModelDef {
 /* if the filemask shouldn't be enough to identify further canon fw files, we should additionally
  * decode the payload for all models and compare the identifier string as well */
 struct ModelDef Models[] = {
-  {"HF10/100",	"VEEX", "D128  CanonDV", FIRST_P_ROUND, FIRST_P_OFFSET_HF10},
-  {"HV30",		"VEFX", "D120B CanonDV", FIRST_P_ROUND, FIRST_P_OFFSET_HV30}
+  {"HF10/100",  "VEEX", "D128  CanonDV", FIRST_P_ROUND, FIRST_P_OFFSET_HF10},
+  {"HF11",      "VELX", "D128S CanonDV", FIRST_P_ROUND, FIRST_P_OFFSET_HF10},
+  {"HV30",      "VEFX", "D120B CanonDV", FIRST_P_ROUND, FIRST_P_OFFSET_HV30}
 };
 
 typedef struct FWHeader {
