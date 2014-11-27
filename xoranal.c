@@ -2,7 +2,7 @@
  * XOR Analyzer
  * XORs a file's content with itself with a sequence of offsets to determine the XOR key length.
  *
- * Copyright 2008 mg1984@gmx.at
+ * Copyright 2008 Mario Guggenberger <mg@protyposis.net>
  */
 #include <stdio.h>
 #include <stddef.h>

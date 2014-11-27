@@ -41,6 +41,7 @@
             this.flpBitmaps = new System.Windows.Forms.FlowLayoutPanel();
             this.cbFixedWidth = new System.Windows.Forms.CheckBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.rbOneByte = new System.Windows.Forms.RadioButton();
             this.rbFourByte = new System.Windows.Forms.RadioButton();
             this.rbTwoByte = new System.Windows.Forms.RadioButton();
             this.btnNext20 = new System.Windows.Forms.Button();
@@ -52,7 +53,6 @@
             this.cbSymbolsImages = new System.Windows.Forms.CheckBox();
             this.pbMediumZoom = new HF10_Bitmap_Viewer.PictureBoxEx();
             this.pbZoomed = new HF10_Bitmap_Viewer.PictureBoxEx();
-            this.rbOneByte = new System.Windows.Forms.RadioButton();
             ((System.ComponentModel.ISupportInitialize)(this.pbOriginal)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudPos)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudWidth)).BeginInit();
@@ -251,6 +251,18 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Alignment";
             // 
+            // rbOneByte
+            // 
+            this.rbOneByte.AutoSize = true;
+            this.rbOneByte.Location = new System.Drawing.Point(6, 15);
+            this.rbOneByte.Name = "rbOneByte";
+            this.rbOneByte.Size = new System.Drawing.Size(54, 17);
+            this.rbOneByte.TabIndex = 2;
+            this.rbOneByte.TabStop = true;
+            this.rbOneByte.Text = "1 byte";
+            this.rbOneByte.UseVisualStyleBackColor = true;
+            this.rbOneByte.CheckedChanged += new System.EventHandler(this.ByteAlign_CheckedChanged);
+            // 
             // rbFourByte
             // 
             this.rbFourByte.AutoSize = true;
@@ -290,11 +302,11 @@
             // 
             this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label4.ForeColor = System.Drawing.SystemColors.ControlDark;
-            this.label4.Location = new System.Drawing.Point(632, 14);
+            this.label4.Location = new System.Drawing.Point(595, 14);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(210, 23);
+            this.label4.Size = new System.Drawing.Size(247, 23);
             this.label4.TabIndex = 20;
-            this.label4.Text = "by Wiesel / mg1984@gmx.at";
+            this.label4.Text = "by Mario Guggenberger <mg@protyposis.net>";
             this.label4.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // statusStrip1
@@ -358,18 +370,6 @@
             this.pbZoomed.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbZoomed.TabIndex = 3;
             this.pbZoomed.TabStop = false;
-            // 
-            // rbOneByte
-            // 
-            this.rbOneByte.AutoSize = true;
-            this.rbOneByte.Location = new System.Drawing.Point(6, 15);
-            this.rbOneByte.Name = "rbOneByte";
-            this.rbOneByte.Size = new System.Drawing.Size(54, 17);
-            this.rbOneByte.TabIndex = 2;
-            this.rbOneByte.TabStop = true;
-            this.rbOneByte.Text = "1 byte";
-            this.rbOneByte.UseVisualStyleBackColor = true;
-            this.rbOneByte.CheckedChanged += new System.EventHandler(this.ByteAlign_CheckedChanged);
             // 
             // Form1
             // 

@@ -1,6 +1,6 @@
 /*
  * Universal Canon Digic DV Firmware Decrypter
- * Copyright 2008 mg1984@gmx.at
+ * Copyright 2008 Mario Guggenberger <mg@protyposis.net>
  *
  * V1.1
  * - option to omit unecrypted file header

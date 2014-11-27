@@ -1,6 +1,7 @@
 /*
  * Canon Firmware Decrypter
  * Copyright Alex Bernstein, 2003
+ * http://alexbernstein.com/wiki/canon-firmware-decrypter/
  */
 #include <stdio.h>
 #include <stddef.h>
