@@ -1,8 +1,10 @@
 /*
  * XOR Analyzer
  * XORs a file's content with itself with a sequence of offsets to determine the XOR key length.
+ * 
+ * The offset that equals the key length will result in a considerably higher count/percentage than the rest.
  *
- * Copyright 2008 Mario Guggenberger <mg@protyposis.net>
+ * Copyright 2008, 2014 Mario Guggenberger <mg@protyposis.net>
  */
 #include <stdio.h>
 #include <stddef.h>
@@ -43,42 +45,23 @@ int shift_count(char *fileData, char *fileDataTemp, int size, int shift) {
 	return count(fileDataTemp, size);
 }
 
-int write_to_file(char *fileData, int size, int round) {
-	char name[15];
-	FILE *f;
-	int i;
-	
-	snprintf(name, 10, "%i.bin", round);
-	if ((f = fopen(name, "wb")) == NULL) {
-		printf("Cant't open file name %s\n", name);
-		return -1;
-	}
-  
-	for(i = 0; i < size; i++)
-		fputc(fileData[i], f);
-		
-	fclose(f);
-	
-	return 0;
-}
 
 int main(int argc, char *argv[])
 {
   FILE *in, *out;
+  char outFileName[255];
   int size = -1;
   int val;
   
   char * fileData;
   char * fileDataTemp;
-  int cCount[KEYSIZE_MAX];
   int round = 0;
   int count;
-  int bestrounds[NUM_RESULTS];
   int forcount = 0;
 
 
-  if (argc != 3) {
-    printf("Usage: xoranal inputfile outfile\n");
+  if (argc != 2 && argc != 3) {
+    printf("Usage: xoranal inputfile [outfile]\n");
     return -1;
   }
 
@@ -87,11 +70,19 @@ int main(int argc, char *argv[])
     return -1;
   }
 
-  if ((out = fopen(argv[2], "wb")) == NULL) {
-    printf("Cant't open file name %s\n", argv[2]);
+  // generate output name from input name if no output name given
+  if (argc == 2) {
+  	snprintf(outFileName, 200, "%s.xoranal.txt", argv[1]);
+  } else {
+  	strcpy(outFileName, argv[2]);
+  }
+  if ((out = fopen(outFileName, "wb")) == NULL) {
+    printf("Cant't open file name %s\n", outFileName);
     fclose(in);
     return -1;
   }
+
+  printf("%s length %i\n", outFileName, strlen(outFileName));
   
   // read file
   fseek(in, 0, SEEK_END);
@@ -106,20 +97,10 @@ int main(int argc, char *argv[])
 	fileData[forcount++] = val;
   }
   fclose(in);
-  //write_to_file(fileData, size, 9999);
-	
 
   while(++round <= KEYSIZE_MAX) {
 	count = shift_count(fileData, fileDataTemp, size, round);
 	fprintf(out, "%10i %10i %f%%\n", round, count, 100 * (float)count / (float)size);
-	
-	//write_to_file(fileDataTemp, size, round);
-	
-	if(count >= cCount[bestrounds[0]]) {
-		for(forcount = NUM_RESULTS - 1; forcount > 0; forcount--)
-			bestrounds[forcount] = bestrounds[forcount - 1];
-		bestrounds[0] = round;
-	}
 	
 	if(round % 10 == 0)
 		printf("round %4i / %4i finished\n", round, KEYSIZE_MAX);
@@ -127,6 +108,7 @@ int main(int argc, char *argv[])
   
   fclose(out);
   
+  printf("finished, see %s for results\n", outFileName);
   
   return 0;
 }
