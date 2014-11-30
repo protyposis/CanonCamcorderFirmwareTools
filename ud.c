@@ -360,6 +360,7 @@ int main(int argc, char *argv[])
   else {
     printf("key loaded from %s\n", keyfilename);
   }
+  printf("\n");
 
   
   if(!o_skip_ed) {
