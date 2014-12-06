@@ -58,6 +58,7 @@ int main(int argc, char *argv[])
   int round = 0;
   int count;
   int forcount = 0;
+  int running_max_count = 0;
 
 
   if (argc != 2 && argc != 3) {
@@ -81,8 +82,6 @@ int main(int argc, char *argv[])
     fclose(in);
     return -1;
   }
-
-  printf("%s length %i\n", outFileName, strlen(outFileName));
   
   // read file
   fseek(in, 0, SEEK_END);
@@ -101,6 +100,11 @@ int main(int argc, char *argv[])
   while(++round <= KEYSIZE_MAX) {
 	count = shift_count(fileData, fileDataTemp, size, round);
 	fprintf(out, "%10i %10i %f%%\n", round, count, 100 * (float)count / (float)size);
+
+  if(count > running_max_count) {
+    printf("new max @ %10i %10i %f%%\n", round, count, 100 * (float)count / (float)size);
+    running_max_count = count;
+  }
 	
 	if(round % 10 == 0)
 		printf("round %4i / %4i finished\n", round, KEYSIZE_MAX);
