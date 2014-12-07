@@ -47,7 +47,7 @@
 
 #define LITTLE_ENDIAN_SYS           // is the compile target little endian?
 
-#define P_SIZE 64                   // packet size
+#define P_SIZE 64                   // key packet size
 
 /* 
  * These are the first 64/65 bytes for the 300D keys from which the camcorder key is computed.
@@ -75,7 +75,7 @@ typedef struct ModelDef {
 } Model;
 
 Model Models[] = {
-  /* The offset of the key to decrypt the file is derived from the internal 
+  /* The offset of the key to decrypt the file is basically the internal 
    * camera ID number, but the camera ID is only visible after decrypting */
   // keyoffset = cameraID#
   {"VEEX", 128, "HF10 / HF100"},            // D128  CanonDV (@ 0x10004)
@@ -83,7 +83,7 @@ Model Models[] = {
   {"VEGX", 130, "HG20 / HG21"},             // D130  CanonDV (@ 0x10004)
   {"VELX", 128, "HF11"},                    // D128S CanonDV (@ 0x10004)
   // new file structure
-  // keyoffset = cameraID# - 8 [unencrypted header size?]
+  // keyoffset = cameraID# - 8 [unencrypted header size]
   {"VGAX", 133, "XF 300 / XF 305"},         // D141 CanonDV (@ 0x100C)
   {"VGDX", 136, "HF S21"},                  // D144 CanonDV (@ 0x1F7DF0)
   {"VHAX", 137, "XF 100 / XF 105"},         // D145 CanonDV (@ 0x3A4830)
@@ -91,8 +91,8 @@ Model Models[] = {
   {"VIBX", 153, "HF R30/R32/R36/R37/R38"},  // D161  CanonDV (@ 0x100C) (FW 1.1.1.0 header says VIBX, decoded data says VGAX)
   {"VIDX", 154, "HF M50/M52/M56"},          // D162  CanonDV (@ 0x100C) (FW 1.1.1.0 header says VIDX, decoded data says VGAX)
   // new file structure
-  // keyoffset = cameraID# - 12 [unencrypted header size?]
-  {"VJCX", 153, "HF R40/R42/R46/R47/R48"},  // 165 (@ 0x200C) 153
+  // keyoffset = cameraID# - 12 [unencrypted header size]
+  {"VJCX", 153, "HF R40/R42/R46/R47/R48"},  // 165 (@ 0x200C)
   {"VJEX", 154, "XA 35 / XA 20 / HF G30"},  // 166 (@ 0x200C)
   {"VJFX", 156, "mini"},                    // 168 (@ 0x200C)
 };
