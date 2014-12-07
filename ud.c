@@ -2,6 +2,10 @@
  * Universal Canon Camcorder Firmware Decrypter
  * Copyright 2008, 2014 Mario Guggenberger <mg@protyposis.net>
  *
+ * V1.0
+ * - first release
+ * - HF10/100 de-/encryption
+ *
  * V1.1
  * - option to omit unecrypted file header
  *
