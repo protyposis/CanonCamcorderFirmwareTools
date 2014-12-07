@@ -55,3 +55,10 @@ The file structure of the update files has changed over time, only the oldest on
 #### Usage ####
 
 First, compile **ud** with GCC (tested with 4.8.1/MinGW on Windows 8.1 x64), e.g. by executing `gcc ud.c -o ud.exe`. To **decrypt** a file, run **ud** on the encrypted file, e.g. `ud VEF1.FIM VEF1.DEC`. To **encrypt** an unencrypted file, apply **ud** similarly, e.g. `ud VEF1.DEC VEF1.FIM`. If you have modified any data or program logic, you need to update the checksums (`-c` option) which is currently only supported for the oldest models, else the update fails. To successfully apply a FW update on the camera, you also need to increment the version number (e.g. 1.0.1.0 to 1.0.1.1) or alternatively modify the update routine to skip the version check (like [here](http://hddv.net/showthread.php?20098-Official-Firmware-Hacking-Thread-(new)&p=213532&viewfull=1#post213532)).
+
+
+License
+-------
+
+Copyright (C) 2008, 2014 Mario Guggenberger <mg@protyposis.net>.
+This project is released under the terms of the GNU General Public License. See `LICENSE` for details.
