@@ -78,6 +78,7 @@ Model Models[] = {
   /* The offset of the key to decrypt the file is basically the internal 
    * camera ID number, but the camera ID is only visible after decrypting */
   // keyoffset = cameraID#
+  //{"VDEX", ???, "HV20"}, 					// no official FW update available (http://hddv.net/showthread.php?20098-Official-Firmware-Hacking-Thread-(new)&p=353392&viewfull=1#post353392)
   {"VEEX", 128, "HF10 / HF100"},            // D128  CanonDV (@ 0x10004)
   {"VEFX", 120, "HV30"},                    // D120B CanonDV (@ 0x10004)
   {"VEGX", 130, "HG20 / HG21"},             // D130  CanonDV (@ 0x10004)
